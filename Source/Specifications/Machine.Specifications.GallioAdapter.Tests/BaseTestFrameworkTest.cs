@@ -17,15 +17,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
+using Gallio.Runner;
 using Gallio.Runner.Harness;
 using Gallio.Runtime;
 using Gallio.Runtime.Loader;
+using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using NUnit.Framework;
 
@@ -38,6 +41,7 @@ namespace Machine.Specifications.GallioAdapter.Tests
     protected TestModel testModel;
 
     ITestHarness harness;
+    IDisposable runtime;
 
     protected abstract Assembly GetSampleAssembly();
 
@@ -46,9 +50,16 @@ namespace Machine.Specifications.GallioAdapter.Tests
     [SetUp]
     public void SetUp()
     {
+      var runtimeSetup = new RuntimeSetup()
+                         {
+                          ConfigurationFilePath = Path.Combine(
+                            AssemblyUtils.GetAssemblyLocalPath(Assembly.GetExecutingAssembly())
+                            , "Gallio.plugin")
+                         };
+      runtime = RuntimeBootstrap.Initialize(runtimeSetup, NullLogger.Instance);
       sampleAssembly = GetSampleAssembly();
 
-      harness = new DefaultTestHarness(TestContextTrackerAccessor.GetInstance(),
+      harness = new DefaultTestHarness(TestContextTrackerAccessor.Instance,
         RuntimeAccessor.Instance.Resolve<ILoader>());
 
       framework = CreateFramework();
@@ -61,6 +72,7 @@ namespace Machine.Specifications.GallioAdapter.Tests
       if (harness != null)
       {
         harness.Dispose();
+        runtime.Dispose();
         harness = null;
         framework = null;
         sampleAssembly = null;

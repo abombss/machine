@@ -92,12 +92,12 @@ namespace Machine.Specifications.GallioAdapter.Tests
       BaseTest assemblyTest = (BaseTest)frameworkTest.Children[0];
       MachineContextTest fixtureTest =
         (MachineContextTest)
-          GetDescendantByName(assemblyTest, "Transferring between from account and to account");
+          GetDescendantByName(assemblyTest, "when transferring between two accounts");
       Assert.AreSame(assemblyTest, fixtureTest.Parent);
       Assert.AreEqual(TestKinds.Fixture, fixtureTest.Kind);
-      Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Machine.Specifications.Example", "Machine.Specifications.Example.Transferring_between_from_account_and_to_account", null, null),
+      Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Machine.Specifications.Example", "Machine.Specifications.Example.when_transferring_between_two_accounts", null, null),
           fixtureTest.CodeElement.CodeReference);
-      Assert.AreEqual("Transferring between from account and to account", fixtureTest.Name);
+      Assert.AreEqual("when transferring between two accounts", fixtureTest.Name);
       Assert.IsFalse(fixtureTest.IsTestCase);
       Assert.AreEqual(2, fixtureTest.Children.Count);
     }
@@ -111,14 +111,14 @@ namespace Machine.Specifications.GallioAdapter.Tests
       BaseTest assemblyTest = (BaseTest)frameworkTest.Children[0];
       MachineContextTest fixtureTest =
         (MachineContextTest)
-          GetDescendantByName(assemblyTest, "Transferring between from account and to account");
+          GetDescendantByName(assemblyTest, "when transferring between two accounts");
 
       MachineSpecificationTest test = (MachineSpecificationTest) GetDescendantByName(fixtureTest, "should debit the from account by the amount transferred");
       Assert.AreSame(fixtureTest, test.Parent);
       Assert.AreEqual(TestKinds.Test, test.Kind);
       Assert.AreEqual(
         new CodeReference(sampleAssembly.FullName, "Machine.Specifications.Example",
-          "Machine.Specifications.Example.Transferring_between_from_account_and_to_account", "should_debit_the_from_account_by_the_amount_transferred", null),
+          "Machine.Specifications.Example.when_transferring_between_two_accounts", "should_debit_the_from_account_by_the_amount_transferred", null),
         test.CodeElement.CodeReference);
       Assert.AreEqual("should debit the from account by the amount transferred", test.Name);
       Assert.IsTrue(test.IsTestCase);

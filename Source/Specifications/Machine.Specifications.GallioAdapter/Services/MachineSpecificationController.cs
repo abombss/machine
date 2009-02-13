@@ -29,8 +29,7 @@ namespace Machine.Specifications.GallioAdapter.Services
 {
   public class MachineSpecificationController : BaseTestController
   {
-    protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
-                                             TestExecutionOptions options, IProgressMonitor progressMonitor)
+    protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
     {
       using (progressMonitor)
       {
@@ -45,6 +44,7 @@ namespace Machine.Specifications.GallioAdapter.Services
           RunTest(rootTestCommand, parentTestStep, progressMonitor);
         }
       }
+      return TestOutcome.Canceled;
     }
 
     private void RunTest(ITestCommand testCommand, ITestStep parentTestStep, IProgressMonitor progressMonitor)
@@ -110,5 +110,7 @@ namespace Machine.Specifications.GallioAdapter.Services
 
       return result.Passed;
     }
+
+
   }
 }
