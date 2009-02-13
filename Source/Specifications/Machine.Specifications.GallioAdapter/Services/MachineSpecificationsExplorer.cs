@@ -99,7 +99,7 @@ namespace Machine.Specifications.GallioAdapter.Services
     private void PopulateAssemblyTest(IAssemblyInfo assembly, ITest assemblyTest)
     {
       AssemblyExplorer explorer = new AssemblyExplorer();
-      var specifications = explorer.FindContextsIn(assembly.Resolve());
+      var specifications = explorer.FindContextsIn(assembly.Resolve(false));
       foreach (var specification in specifications)
       {
         var specificationTest = new MachineContextTest(specification);
@@ -120,7 +120,7 @@ namespace Machine.Specifications.GallioAdapter.Services
     private static ITest CreateFrameworkTest(Version frameworkVersion)
     {
       BaseTest frameworkTest = new BaseTest(String.Format(Resources.MachineSpecificationExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
-      frameworkTest.BaselineLocalId = Resources.MachineSpecificationFramework_MachineSpecificationFrameworkName;
+      //frameworkTest.LocalIdHint = Resources.MachineSpecificationFramework_MachineSpecificationFrameworkName;
       frameworkTest.Kind = TestKinds.Framework;
 
       return frameworkTest;
