@@ -17,7 +17,7 @@ namespace Machine.Specifications.Factories
       It it = (It)specificationField.GetValue(context.Instance);
       string name = specificationField.Name.ReplaceUnderscores().Trim();
 
-      return new Specification(name, it, isIgnored, specificationField);
+      return new Specification(context, name, it, isIgnored, specificationField);
     }
 
 

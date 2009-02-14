@@ -12,6 +12,7 @@ namespace Machine.Specifications.Model
     readonly It _it;
     readonly bool _isIgnored;
     readonly FieldInfo _fieldInfo;
+    readonly Context _context;
 
     public FieldInfo FieldInfo
     {
@@ -28,8 +29,9 @@ namespace Machine.Specifications.Model
       get { return _isIgnored; }
     }
 
-    public Specification(string name, It it, bool isIgnored, FieldInfo fieldInfo)
+    public Specification(Context context, string name, It it, bool isIgnored, FieldInfo fieldInfo)
     {
+      _context = context;
       _name = name;
       _it = it;
       _isIgnored = isIgnored;
@@ -68,6 +70,11 @@ namespace Machine.Specifications.Model
     public bool IsExecutable
     {
       get { return IsDefined && !IsIgnored; }
+    }
+
+    public Context Context
+    {
+      get { return _context; }
     }
 
     protected virtual void InvokeSpecificationField()

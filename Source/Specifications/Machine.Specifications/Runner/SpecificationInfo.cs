@@ -8,10 +8,21 @@ namespace Machine.Specifications.Runner
   [Serializable]
   public class SpecificationInfo
   {
-    public string Name { get; set; }
+    public string Name { get; private set; }
 
-    public SpecificationInfo(string name)
+    public string FullName
     {
+      get
+      {
+        return Context.FullName + "/" + Name;
+      }
+    }
+
+    public ContextInfo Context { get; private set; }
+
+    public SpecificationInfo(ContextInfo context, string name)
+    {
+      Context = context;
       Name = name;
     }
   }

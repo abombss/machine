@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gallio.Model;
+using Gallio.Model.Execution;
 using Gallio.Reflection;
 using Machine.Specifications.Example;
 using Machine.Specifications.GallioAdapter.Model;
@@ -124,5 +125,6 @@ namespace Machine.Specifications.GallioAdapter.Tests
       Assert.IsTrue(test.IsTestCase);
       Assert.AreEqual(0, test.Children.Count);
     }
+
   }
 }
