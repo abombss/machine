@@ -45,10 +45,13 @@ namespace Machine.Specifications.Runner.Impl
       var results = new List<Result>();
       foreach (var specification in context.Specifications)
       {
-        var runner = new SpecificationRunner(listener, options);
-        var result = runner.Run(specification);
+        if (!options.Filter.Exclude(specification.GetInfo()))
+        {
+          var runner = new SpecificationRunner(listener, options);
+          var result = runner.Run(specification);
 
-        results.Add(result);
+          results.Add(result);
+        }
       }
 
       return results;

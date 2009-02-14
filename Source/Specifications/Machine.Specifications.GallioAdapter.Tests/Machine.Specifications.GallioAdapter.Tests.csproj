@@ -58,6 +58,8 @@
     </Compile>
     <Compile Include="BaseTestFrameworkTest.cs" />
     <Compile Include="FrameworkTests.cs" />
+    <Compile Include="BaseTestWithSampleRunner.cs" />
+    <Compile Include="IntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

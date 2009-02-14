@@ -1,44 +1,25 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Gallio.Model;
-using Gallio.Model.Execution;
 using Gallio.Reflection;
-using Machine.Specifications.GallioAdapter.Services;
 using Machine.Specifications.Model;
 
 namespace Machine.Specifications.GallioAdapter.Model
 {
+  /// <summary>An individual test case.</summary>
   public class MachineSpecificationTest : MachineGallioTest
   {
-    private readonly Specification _specification;
+    readonly Specification _specification;
 
-    /*
-    public Specification Specification
+    public MachineSpecificationTest(Specification specification)
+      : base(specification.Name, Reflector.Wrap(specification.FieldInfo))
     {
-      get { return _specification; }
-    }
-    */
-
-    public MachineSpecificationTest(Specification specification) : base(specification.Name, Reflector.Wrap(specification.FieldInfo))
-    {
-      this.Kind = TestKinds.Test;
-      this.IsTestCase = true;
+      Kind = TestKinds.Test;
+      IsTestCase = true;
       _specification = specification;
     }
 
-    public Result Execute()
+    public Specification Specification
     {
-      MachineContextTest parent = this.Parent as MachineContextTest;
-      if (parent == null) throw new Exception("Specification has non-Context parent???");
-
-      throw new NotImplementedException();
-
-      /*
-      var result = parent.Context.VerifySpecification(_specification);
-      return result;
-      */
+      get { return _specification; }
     }
   }
 }

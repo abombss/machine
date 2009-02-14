@@ -1,31 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Gallio.Model;
-using Gallio.Model.Execution;
 using Gallio.Reflection;
-using Machine.Specifications.GallioAdapter.Services;
 
 namespace Machine.Specifications.GallioAdapter.Model
 {
+  /// <summary>A base class for wrapping machine specifications around gallio tests</summary>
   public abstract class MachineGallioTest : BaseTest
   {
-    protected MachineGallioTest(string name, ICodeElementInfo codeElement) : base(name, codeElement)
+    protected MachineGallioTest(string name, ICodeElementInfo codeElement)
+      : base(name, codeElement)
     {
-    }
-
-    public override Gallio.Func<Gallio.Model.Execution.ITestController> TestControllerFactory
-    {
-      get
-      {
-        return CreateTestController;
-      }
-    }
-
-    private static ITestController CreateTestController()
-    {
-      return new MachineSpecificationController();
     }
   }
 }
