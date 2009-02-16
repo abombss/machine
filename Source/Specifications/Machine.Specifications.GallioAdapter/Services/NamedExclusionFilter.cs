@@ -27,7 +27,8 @@ namespace Machine.Specifications.GallioAdapter.Services
 
     public override bool Exclude(SpecificationInfo specification)
     {
-      return !_specsToRun.Contains(specification.FullName);
+      return false;
+      //return !_specsToRun.Contains(specification.FullName);
     }
   }
 }

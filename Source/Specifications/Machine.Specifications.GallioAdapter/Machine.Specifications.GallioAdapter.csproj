@@ -52,6 +52,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AbstractReflectionExtensions.cs" />
     <Compile Include="Model\MachineAssemblyTest.cs" />
     <Compile Include="Model\MachineContextTest.cs" />
     <Compile Include="Model\MachineFrameworkTest.cs" />
@@ -67,6 +68,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\MachineSpecificationsTestFactory.cs" />
     <Compile Include="Services\NamedExclusionFilter.cs" />
   </ItemGroup>
   <ItemGroup>

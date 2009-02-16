@@ -1,25 +1,28 @@
 using Gallio.Model;
 using Gallio.Reflection;
 using Machine.Specifications.Model;
+using Machine.Specifications.Utility;
 
 namespace Machine.Specifications.GallioAdapter.Model
 {
   /// <summary>An individual test case.</summary>
   public class MachineSpecificationTest : MachineGallioTest
   {
-    readonly Specification _specification;
+    readonly MachineContextTest _contextTest;
+    readonly IFieldInfo _specificationFieldInfo;
 
-    public MachineSpecificationTest(Specification specification)
-      : base(specification.Name, Reflector.Wrap(specification.FieldInfo))
+    public MachineSpecificationTest(MachineContextTest contextTest, IFieldInfo specificationFieldInfo)
+      : base(specificationFieldInfo.Name, specificationFieldInfo)
     {
       Kind = TestKinds.Test;
       IsTestCase = true;
-      _specification = specification;
+      _contextTest = contextTest;
+      _specificationFieldInfo = specificationFieldInfo;
     }
 
-    public Specification Specification
+    public override string FriendlyId
     {
-      get { return _specification; }
+      get { return _contextTest.FriendlyId + "/" + _specificationFieldInfo.Name.ReplaceUnderscores(); }
     }
   }
 }

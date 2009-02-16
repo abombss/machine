@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using Gallio.Model;
 using Gallio.Model.Execution;
@@ -115,12 +116,12 @@ namespace Machine.Specifications.GallioAdapter.Services
 
       public void OnContextStart(ContextInfo context)
       {
-        HandleStart(context.FullName);
+        HandleStart(context.Name);
       }
 
       public void OnContextEnd(ContextInfo context)
       {
-        HandleFinished(context.FullName, null);
+        HandleFinished(context.Name, null);
       }
 
       public void OnSpecificationStart(SpecificationInfo specification)
@@ -144,7 +145,7 @@ namespace Machine.Specifications.GallioAdapter.Services
         _worstResult = Result.Pass();
         Filter filter = InitializeAndCreateFilter(_testCommands);
 
-        var runner = new AppDomainRunner(this, new RunOptions(filter));
+        var runner = new DefaultRunner(this, new RunOptions(filter));
         runner.RunAssemblies(_assemblies);
         return _worstResult.Status == Status.Passing ? TestOutcome.Passed : TestOutcome.Failed;
       }
@@ -156,21 +157,18 @@ namespace Machine.Specifications.GallioAdapter.Services
           if (testCommand.Test is MachineSpecificationTest)
           {
             var spec = testCommand.Test as MachineSpecificationTest;
-            if (spec != null && spec.Specification != null && spec.Specification.Context != null)
-            {
-              _testsByName.Add(spec.Specification.Context.FullName + "/" + spec.Name, testCommand);
-            }
+            _testsByName.Add(spec.FriendlyId, testCommand);
           }
           else if (testCommand.Test is MachineContextTest)
           {
             var context = testCommand.Test as MachineContextTest;
-            _testsByName.Add(context.Context.FullName, testCommand);
+            _testsByName.Add(context.FriendlyId, testCommand);
           }
           else if (testCommand.Test is MachineAssemblyTest)
           {
             var assemblyTest = testCommand.Test as MachineAssemblyTest;
             _assemblies.Add(assemblyTest.Assembly);
-            _testsByName.Add(assemblyTest.Name, testCommand);
+            _testsByName.Add(assemblyTest.FriendlyId, testCommand);
           }
         }
 
@@ -259,17 +257,6 @@ namespace Machine.Specifications.GallioAdapter.Services
           if (!result.Passed)
           {
             SetParentsOutcome(testContext.Parent, TestOutcome.Failed);
-          }
-          else
-          {
-            if (testContext.TestStep.Test is MachineSpecificationTest)
-            {
-              var spec = testContext.TestStep.Test as MachineSpecificationTest;
-              if (spec.Specification.IsExecutable)
-              {
-                testContext.AddAssertCount(1);
-              }
-            }
           }
         }
         else

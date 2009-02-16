@@ -20,5 +20,10 @@ namespace Machine.Specifications.GallioAdapter.Model
     {
       get { return () => new MachineSpecificationController(); }
     }
+
+    public override string FriendlyId
+    {
+      get { return Name; }
+    }
   }
 }
