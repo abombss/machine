@@ -14,7 +14,7 @@ namespace Machine.Specifications.Runner
     {
       get
       {
-        return Context.FullName + "/" + Name;
+        return Context.Name + "/" + Name;
       }
     }
 

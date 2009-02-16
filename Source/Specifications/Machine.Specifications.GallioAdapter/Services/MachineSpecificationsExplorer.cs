@@ -17,6 +17,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using Gallio.Model;
 using Gallio.Reflection;
@@ -35,6 +37,7 @@ namespace Machine.Specifications.GallioAdapter.Services
     public readonly Dictionary<IAssemblyInfo, ITest> assemblyTests;
     public readonly Dictionary<Version, ITest> frameworkTests;
     public readonly Dictionary<ITypeInfo, ITest> typeTests;
+    readonly MachineSpecificationsTestFactory _specificationTestFactory;
 
     public MachineSpecificationsExplorer(TestModel testModel)
       : base(testModel)
@@ -42,11 +45,13 @@ namespace Machine.Specifications.GallioAdapter.Services
       frameworkTests = new Dictionary<Version, ITest>();
       assemblyTests = new Dictionary<IAssemblyInfo, ITest>();
       typeTests = new Dictionary<ITypeInfo, ITest>();
-      _contextTestFactory = new MachineContextTestFactory();
+      _contextTestFactory = new MachineContextTestFactory(new ContextMetadataBuilder());
+      _specificationTestFactory = new MachineSpecificationsTestFactory();
     }
 
     public override void ExploreAssembly(IAssemblyInfo assembly, Action<ITest> consumer)
     {
+      //Debugger.Launch();
       Version frameworkVersion = GetFrameworkVersion(assembly);
 
       if (frameworkVersion != null)
@@ -61,8 +66,7 @@ namespace Machine.Specifications.GallioAdapter.Services
 
     static Version GetFrameworkVersion(IAssemblyInfo assembly)
     {
-      AssemblyName frameworkAssemblyName = ReflectionUtils.FindAssemblyReference(assembly,
-        MachineSpecificationsAssemblyDisplayName);
+      AssemblyName frameworkAssemblyName = ReflectionUtils.FindAssemblyReference(assembly, MachineSpecificationsAssemblyDisplayName);
       return frameworkAssemblyName != null ? frameworkAssemblyName.Version : null;
     }
 
@@ -73,10 +77,8 @@ namespace Machine.Specifications.GallioAdapter.Services
       {
         frameworkTest = CreateFrameworkTest(frameworkVersion);
         rootTest.AddChild(frameworkTest);
-
         frameworkTests.Add(frameworkVersion, frameworkTest);
       }
-
       return frameworkTest;
     }
 
@@ -101,24 +103,37 @@ namespace Machine.Specifications.GallioAdapter.Services
 
     void PopulateAssemblyTest(IAssemblyInfo assembly, ITest assemblyTest)
     {
-      var explorer = new AssemblyExplorer();
-      IEnumerable<Context> contexts = explorer.FindContextsIn(assembly.Resolve(false));
-      foreach (Context context in contexts)
-      {
-        MachineContextTest machineContextTest = _contextTestFactory.CreateTest(assemblyTest, context);
-        assemblyTest.AddChild(machineContextTest);
+      assembly.GetTypes()
+        .Where(type => type.IsContext())
+        .ForEach(type =>
+        {
+          var contextTest = _contextTestFactory.CreateTest(assemblyTest, type);
+          foreach (var fieldSpecificationInfo in type.GetSpecifications())
+          {
+            var specificationTest = _specificationTestFactory.CreateTest(contextTest, fieldSpecificationInfo);
+            contextTest.AddChild(specificationTest);
+          }
+          assemblyTest.AddChild(contextTest);
+        });
 
-        PopulateSpecificationTest(context, machineContextTest);
-      }
+      //var explorer = new AssemblyExplorer();
+      //IEnumerable<Context> contexts = explorer.FindContextsIn(assembly.Resolve(false));
+      //foreach (Context context in contexts)
+      //{
+      //  MachineContextTest machineContextTest = _contextTestFactory.CreateTest(assemblyTest, context);
+      //  assemblyTest.AddChild(machineContextTest);
+
+      //  PopulateSpecificationTest(context, machineContextTest);
+      //}
     }
 
-    void PopulateSpecificationTest(Context context, MachineContextTest test)
-    {
-      foreach (Specification specification in context.Specifications)
-      {
-        test.AddChild(new MachineSpecificationTest(specification));
-      }
-    }
+    //void PopulateSpecificationTest(Context context, MachineContextTest test)
+    //{
+    //  foreach (Specification specification in context.Specifications)
+    //  {
+    //    test.AddChild(new MachineSpecificationTest(specification));
+    //  }
+    //}
 
     static ITest CreateFrameworkTest(Version frameworkVersion)
     {

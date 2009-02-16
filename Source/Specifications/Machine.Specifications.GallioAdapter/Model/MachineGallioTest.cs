@@ -1,5 +1,6 @@
 using Gallio.Model;
 using Gallio.Reflection;
+using Machine.Specifications.GallioAdapter.Services;
 
 namespace Machine.Specifications.GallioAdapter.Model
 {
@@ -10,5 +11,9 @@ namespace Machine.Specifications.GallioAdapter.Model
       : base(name, codeElement)
     {
     }
+
+    /// <summary>Id used to lookup tests from exploration during execution 
+    /// in the <see cref="MachineSpecificationController.RunMonitor"/></summary>
+    public abstract string FriendlyId { get; }
   }
 }
